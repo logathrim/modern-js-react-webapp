@@ -1,12 +1,6 @@
-# Sample workflow for building and deploying a Jekyll site to GitHub Pages
-name: Deploy to GitHub Pages
+name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-
-on:
-  # Runs on pushes targeting the default branch
-  push:
-    branches: ["main"]
-
+on: [push]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
