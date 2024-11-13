@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import { CheckCircle2, XCircle, RefreshCw } from 'lucide-react';
-import { QuizQuestion } from '../types';
+import { useState } from "react";
+import { CheckCircle2, XCircle, RefreshCw } from "lucide-react";
+import { QuizQuestion } from "../types";
 
 interface QuizProps {
   questions: QuizQuestion[];
+  handleLessonComplete: () => void;
 }
 
-export default function Quiz({ questions }: QuizProps) {
+export default function Quiz({ questions, handleLessonComplete }: QuizProps) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -29,6 +30,7 @@ export default function Quiz({ questions }: QuizProps) {
       setShowExplanation(false);
     } else {
       setCompleted(true);
+      handleLessonComplete();
     }
   };
 
@@ -43,7 +45,9 @@ export default function Quiz({ questions }: QuizProps) {
   if (completed) {
     return (
       <div className="bg-white rounded-lg p-8 shadow-lg">
-        <h3 className="text-2xl font-bold text-center mb-6">Quiz Completed! 🎉</h3>
+        <h3 className="text-2xl font-bold text-center mb-6">
+          Quiz Completed! 🎉
+        </h3>
         <div className="text-center mb-6">
           <p className="text-xl">Your Score:</p>
           <p className="text-3xl font-bold text-indigo-600">
@@ -88,25 +92,24 @@ export default function Quiz({ questions }: QuizProps) {
             disabled={selectedAnswer !== null}
             className={`w-full text-left p-4 rounded-lg border transition-all ${
               selectedAnswer === null
-                ? 'hover:border-indigo-500 hover:bg-indigo-50'
+                ? "hover:border-indigo-500 hover:bg-indigo-50"
                 : selectedAnswer === index
                 ? index === question.correctAnswer
-                  ? 'border-green-500 bg-green-50'
-                  : 'border-red-500 bg-red-50'
+                  ? "border-green-500 bg-green-50"
+                  : "border-red-500 bg-red-50"
                 : index === question.correctAnswer
-                ? 'border-green-500 bg-green-50'
-                : 'border-gray-200'
+                ? "border-green-500 bg-green-50"
+                : "border-gray-200"
             }`}
           >
             <div className="flex items-center justify-between">
               <span>{option}</span>
-              {selectedAnswer !== null && (
-                index === question.correctAnswer ? (
+              {selectedAnswer !== null &&
+                (index === question.correctAnswer ? (
                   <CheckCircle2 className="h-5 w-5 text-green-500" />
                 ) : selectedAnswer === index ? (
                   <XCircle className="h-5 w-5 text-red-500" />
-                ) : null
-              )}
+                ) : null)}
             </div>
           </button>
         ))}
@@ -123,7 +126,9 @@ export default function Quiz({ questions }: QuizProps) {
           onClick={handleNext}
           className="w-full mt-6 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
         >
-          {currentQuestion < questions.length - 1 ? 'Next Question' : 'Complete Quiz'}
+          {currentQuestion < questions.length - 1
+            ? "Next Question"
+            : "Complete Quiz"}
         </button>
       )}
     </div>

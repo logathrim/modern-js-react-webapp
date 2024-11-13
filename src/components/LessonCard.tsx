@@ -1,4 +1,3 @@
-import React from "react";
 import { ChevronRight, CheckCircle2 } from "lucide-react";
 
 interface LessonCardProps {

@@ -19,11 +19,16 @@ export default function LearningPage({ setShowLearning }: LearningPageProps) {
     }
   }, []);
 
-  const handleLessonClick = (lesson: (typeof jsLessons)[0]) => {
+  const handleLessonClick = (
+    lesson: (typeof jsLessons)[0],
+    isQuiz?: boolean
+  ) => {
     setSelectedLesson(lesson);
-    setShowQuiz(0);
-    if (!completedLessons.includes(lesson.id)) {
+    if (isQuiz && !completedLessons.includes(lesson.id)) {
       setCompletedLessons([...completedLessons, lesson.id]);
+    }
+    if (!isQuiz) {
+      setShowQuiz(0);
     }
     if (window) {
       window.scrollTo(0, 0);
@@ -89,11 +94,10 @@ export default function LearningPage({ setShowLearning }: LearningPageProps) {
           <div className="lg:col-span-8">
             <div className="bg-white rounded-lg shadow">
               <LessonContent
-                content={selectedLesson.content}
-                codeExamples={selectedLesson.codeExamples}
-                quiz={selectedLesson.quiz}
+                lesson={selectedLesson}
                 showQuiz={showQuiz}
                 setShowQuiz={setShowQuiz}
+                handleLessonComplete={handleLessonClick}
               />
             </div>
           </div>

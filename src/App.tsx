@@ -178,13 +178,13 @@ function App() {
               onStartLearning={handleStartLearning}
             />
 
-            <CourseCard
+            {/* <CourseCard
               title="React.js Fundamentals"
               description="เริ่มต้นเรียนรู้ React.js ตั้งแต่พื้นฐานจนถึงการสร้างแอพพลิเคชันขนาดใหญ่ เรียนรู้การจัดการ State, Hooks, และ Best Practices ต่างๆ"
               topics={reactTopics}
               image="https://images.unsplash.com/photo-1633356122544-f134324a6cee?ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80"
               onStartLearning={handleStartLearning}
-            />
+            /> */}
           </div>
         </div>
       </section>
