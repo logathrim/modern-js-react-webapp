@@ -1,7 +1,19 @@
 import Editor from "@monaco-editor/react";
 import draculaTheme from "../themes/editor.json";
+import { Brain, Play } from "lucide-react";
+import { useState } from "react";
+import Modal from "./Modal";
+import Markdown from "./Markdown";
 
 const Coding = () => {
+  const [code, setCode] = useState("");
+  const [modal, setModal] = useState({
+    isOpen: false,
+    title: "",
+    content: "",
+  });
+  const [isModalLoading, setIsModalLoading] = useState(false);
+
   const editorOptions = {
     fontSize: 16,
     fontFamily: "MesloLGL, sans-serif",
@@ -29,8 +41,88 @@ function sayHello() {
   
 sayHello();`;
 
+  const runCode = () => {
+    try {
+      eval(code);
+      setModal({
+        isOpen: true,
+        title: "Success",
+        content: "โค้ดทำงานถูกต้อง",
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        setModal({
+          isOpen: true,
+          title: "Error",
+          content: error.message,
+        });
+      } else {
+        setModal({
+          isOpen: true,
+          title: "Error",
+          content: String(error),
+        });
+      }
+    }
+  };
+
+  const aiHelper = async () => {
+    if (modal.content === "") {
+      setModal({
+        isOpen: true,
+        title: "AI Assistant",
+        content: "จำเป็นต้อง run โค้ดก่อน",
+      });
+      return;
+    }
+
+    setModal({
+      isOpen: true,
+      title: "AI Assistant",
+      content: "",
+    });
+    setIsModalLoading(true);
+
+    const res = await fetch("http://localhost:3000/ai", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: `${code}, จากโค้ดนี้ฉันพบ error นี้ ${modal.content}`,
+      }),
+    });
+    const data = await res.json();
+
+    setModal({
+      isOpen: true,
+      title: "AI Assistant",
+      content: data?.message?.content,
+    });
+    setIsModalLoading(false);
+  };
+
   return (
     <div className="w-full h-full min-h-[400px] rounded-lg overflow-hidden border border-gray-200">
+      <div className="flex gap-2 flex-shrink-0 ms-auto max-w-full overflow-x-auto mt-3">
+        <button
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all bg-emerald-400 text-white hover:bg-emerald-600
+            ms-auto`}
+          onClick={runCode}
+        >
+          <Play />
+          Run
+        </button>
+        <button
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all bg-cyan-400 text-white hover:bg-cyan-600
+            mr-4`}
+          onClick={aiHelper}
+        >
+          <Brain />
+          AI
+        </button>
+      </div>
+
       <Editor
         height="600px"
         defaultLanguage="javascript"
@@ -178,7 +270,30 @@ sayHello();`;
             },
           });
         }}
+        onChange={(value) => {
+          setCode(value + "");
+        }}
       />
+
+      <Modal
+        isOpen={modal.isOpen}
+        onClose={() => setModal({ ...modal, isOpen: false })}
+        title={modal.title}
+        size="md"
+        onConfirm={() => {}}
+        confirmText="Close"
+        closeOnBackdropClick
+        isLoading={isModalLoading}
+      >
+        <div className="space-y-4">
+          {/* <p className="text-gray-600">{modal.title}</p> */}
+          {/* <div className="bg-gray-50 p-4 rounded-md">{modal.content}</div> */}
+
+          <div className="prose prose-lg max-w-none leading-10">
+            <Markdown content={modal.content} />
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

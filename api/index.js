@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const OpenAI = require("openai");
+const cors = require("cors");
 require("dotenv").config();
 
 const app = express();
@@ -11,6 +12,7 @@ const port = process.env.PORT || 3000;
 app
   .use(bodyParser.urlencoded({ extended: true }))
   .use(bodyParser.json())
+  .use(cors())
   .post("/ai", async (req, res) => {
     try {
       const { message } = req.body;
